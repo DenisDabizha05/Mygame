@@ -2758,7 +2758,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 399541592a080954fb0c850aedfc6b52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bouncer
-  bounceForce: 10
+  bounceForce: 20
 --- !u!1 &1613179444
 GameObject:
   m_ObjectHideFlags: 0
