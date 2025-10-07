@@ -2,32 +2,48 @@ using UnityEngine;
 
 public class DeathZone : MonoBehaviour
 {
-    [Tooltip("Начальная точка возрождения игрока. Если не назначена, будет использоваться позиция (0,0,0)")]
+    [Tooltip("Начальная точка возрождения игрока")]
     public Transform respawnPoint;
+
+    private HealthManager healthManager;
 
     private void Start()
     {
-       
+        // Находим HealthManager в сцене
+        healthManager = FindObjectOfType<HealthManager>();
+
         if (respawnPoint == null)
         {
             GameObject defaultRespawn = new GameObject("DefaultRespawnPoint");
             respawnPoint = defaultRespawn.transform;
-            respawnPoint.position = Vector3.zero;
+            respawnPoint.position = new Vector3(-9, 1, 1);
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        
         if (other.CompareTag("Player"))
         {
+            // Отнимаем сердечко перед возрождением
+            LoseHealth();
             RespawnPlayer(other.gameObject);
+        }
+    }
+
+    private void LoseHealth()
+    {
+        if (healthManager != null)
+        {
+            healthManager.LoseHealth();
+        }
+        else
+        {
+            Debug.LogWarning("HealthManager не найден в сцене!");
         }
     }
 
     private void RespawnPlayer(GameObject player)
     {
-       
         CharacterController characterController = player.GetComponent<CharacterController>();
         bool wasEnabled = false;
 
@@ -37,10 +53,8 @@ public class DeathZone : MonoBehaviour
             characterController.enabled = false;
         }
 
-        
-        player.transform.position = new Vector3(-9, 1, 1);
+        player.transform.position = respawnPoint.position;
         player.transform.rotation = respawnPoint.rotation;
-
 
         // Сбрасываем скорость (если есть Rigidbody)
         Rigidbody rb = player.GetComponent<Rigidbody>();
